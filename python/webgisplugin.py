@@ -20,7 +20,7 @@ import PyQt5.uic
 from PyQt5.QtCore import QDir, QFileInfo
 from qgis.core import (
     Qgis, QgsMapLayer, QgsProject, QgsLayerTreeLayer, QgsLayerTreeGroup, QgsLayoutItemLabel, QgsCoordinateReferenceSystem,
-    QgsMapLayerType, QgsWkbTypes, QgsUnitTypes, QgsDataSourceUri, QgsFieldConstraints
+    QgsMapLayerType, QgsWkbTypes, QgsUnitTypes, QgsDataSourceUri, QgsFieldConstraints, QgsCoordinateTransform
 )
 # from qgis.server import QgsServerProjectUtils
 from qgis.PyQt.QtWidgets import QAction, QMessageBox, QPushButton
@@ -204,6 +204,37 @@ class WebGisPlugin(object):
         project = QgsProject.instance()
         layers = project.mapLayers().items()
         return [lid for lid, layer in layers if layer.customProperty("WMSBackgroundLayer")]
+
+
+    def get_bookmarks(self):
+        project = QgsProject.instance()
+        bookmarkManager = project.bookmarkManager()
+        result = {}
+        
+        for bookmark in bookmarkManager.bookmarks():
+            group_name = bookmark.group() or 'default'
+            if not result.get(group_name):
+                result[group_name] = {}
+
+            extent = bookmark.extent()
+            if not extent.isEmpty():
+                transform = QgsCoordinateTransform(bookmark.extent().crs(), project.crs(), QgsProject.instance())
+                extent = transform.transform(extent)
+                extent = extent.toRectF().getCoords()
+            else:
+                extent = None
+
+            id = bookmark.id()
+
+            result[group_name][id] = {
+                "id": id,
+                "name": bookmark.name(),
+                "rotation": getattr(bookmark, 'rotation', float)(),
+                "extent": format_extent(extent, project.crs()),
+                "group": group_name,
+            }
+
+        return result
 
 
     def get_project_layers(self, skip_layers_with_error=False):
@@ -501,6 +532,7 @@ class WebGisPlugin(object):
             "layers_order": [l.id() for l in project.layerTreeRoot().layerOrder()],
             "layers_tree": self.get_layers_tree(),
             "base_layers": self.get_background_layers(),
+            "bookmarks": self.get_bookmarks(),
             "composer_templates": self.get_print_templates(),
             "projection": project_crs.authid(),
             "units": units,
