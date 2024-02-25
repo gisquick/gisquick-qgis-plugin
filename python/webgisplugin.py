@@ -188,10 +188,11 @@ class WebGisPlugin(object):
                     info = visit_node(child_tree_node)
                     if info:
                         children.append(info)
-                group = {
+                group = clean_data({
                     "name": tree_node.name(),
+                    "wms_name": tree_node.customProperty("wmsShortName"),
                     "layers": children
-                }
+                })
                 if tree_node.isMutuallyExclusive():
                     group["mutually_exclusive"] = True
                 return group
@@ -598,6 +599,16 @@ class WebGisPlugin(object):
                     layer = project.mapLayer(lid)
                     if layer:
                         layer.setShortName(short_name)
+
+                groups_short_names = data.get("groups_short_names", None)
+                if groups_short_names:
+                    root_node = self.iface.layerTreeView().layerTreeModel().rootGroup()
+                    for gid, short_name in groups_short_names.items():
+                        g = root_node
+                        for i in map(int, gid.split(',')):
+                            g = g.children()[i]
+                        g.setCustomProperty('wmsShortName', short_name)
+
                 project.write()
 
             else:
