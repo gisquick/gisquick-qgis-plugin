@@ -389,6 +389,7 @@ class WebGisPlugin(object):
                             referencing_fields = [rl_fields.at(fi).name() for fi in rel.referencingFields()]
                             referenced_fields = [layer.fields().at(fi).name() for fi in rel.referencedFields()]
                             relations_data.append({
+                                "id": rel.id(),
                                 "name": rel.name(),
                                 "referencing_layer": rl.shortName() or rl.name(),
                                 "strength": rel.strength(),

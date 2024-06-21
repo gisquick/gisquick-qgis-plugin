@@ -3,7 +3,7 @@ name=Gisquick
 qgisMinimumVersion=3.16
 description=Publish your QGIS projects in Gisquick
 category=Web
-version=2.5.4
+version=2.5.5
 author=Gisquick Team
 email=gisquick@opengeolabs.cz
 about=Gisquick plugin for publishing your QGIS projects on Gisquick web-based publishing platform. Gisquick (<a href="http://gisquick.org">http://gisquick.org</a>) is designed as an open source platform for publishing geospatial data in the sense of rapid sharing QGIS projects on the web.
