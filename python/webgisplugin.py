@@ -154,7 +154,7 @@ class WebGisPlugin(object):
             constraints = int(f.constraints().constraints())
             widget = f.editorWidgetSetup()
             data_type = FieldTypes.get(f.type())
-            constrains = {
+            constraints = {
                 "not_null": constraints & QgsFieldConstraints.ConstraintNotNull,
                 "unique": constraints & QgsFieldConstraints.ConstraintUnique,
                 "readonly": f.isReadOnly() if hasattr(f, "isReadOnly") else False,
@@ -164,7 +164,7 @@ class WebGisPlugin(object):
                 "alias": f.alias(),
                 "type": data_type,
                 "note": f.comment(),
-                "constrains": [k for k, v in constrains.items() if v],
+                "constraints": [k for k, v in constraints.items() if v],
                 # "allow_null": not(constraints & QgsFieldConstraints.ConstraintNotNull),
                 "widget": widget.type(),
                 "config": widget.config()
