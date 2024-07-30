@@ -58,7 +58,9 @@ for t, codes in Types.items():
     FieldTypes.update({c: t for c in codes})
 
 
-def clean_data(data):
+def clean_data(data, empty_list=False):
+    if not empty_list:
+        return {k:v for k, v in data.items() if v or v == False or type(v) is list}
     return {k:v for k, v in data.items() if v or v == False}
 
 
@@ -169,7 +171,7 @@ class WebGisPlugin(object):
                 "widget": widget.type(),
                 "config": widget.config()
             }
-            attributes.append(clean_data(data))
+            attributes.append(clean_data(data, empty_list=True))
         return attributes
 
 
