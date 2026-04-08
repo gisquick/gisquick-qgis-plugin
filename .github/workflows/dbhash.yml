@@ -24,4 +24,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dbhash-macos-arm
-          path: sqlite-amalgamation-3460000/dbhash
+          path: dbhash
