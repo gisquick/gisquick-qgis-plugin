@@ -11,13 +11,13 @@ jobs:
     steps:
       - name: Download SQLite source
         run: |
-          wget https://www.sqlite.org/2024/sqlite-amalgamation-3460000.zip
-          unzip sqlite-amalgamation-3460000.zip
+          wget https://www.sqlite.org/2024/sqlite-src-3460000.zip
+          unzip sqlite-src-3460000.zip
 
       - name: Compile dbhash
         run: |
-          cd sqlite-amalgamation-3460000
-          gcc -O2 -DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION dbhash.c sqlite3.c -lm -o dbhash
+          cd sqlite-src-3460000
+          gcc -O2 -DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION tool/dbhash.c sqlite3.c -lm -o dbhash
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
