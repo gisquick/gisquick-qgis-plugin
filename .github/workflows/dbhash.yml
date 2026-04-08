@@ -1,14 +1,26 @@
+name: Build dbhash macOS ARM
+
+on:
+  push:
+    branches: [main]
+
 jobs:
   build-macos-arm:
-    runs-on: macos-14  # Apple Silicon runner
+    runs-on: macos-14
+
     steps:
-      - uses: actions/checkout@v4
-      - run: |
+      - name: Download SQLite source
+        run: |
           wget https://www.sqlite.org/2024/sqlite-amalgamation-3460000.zip
           unzip sqlite-amalgamation-3460000.zip
+
+      - name: Compile dbhash
+        run: |
           cd sqlite-amalgamation-3460000
           gcc -O2 -DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION dbhash.c sqlite3.c -lm -o dbhash
-      - uses: actions/upload-artifact@v4
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
           name: dbhash-macos-arm
           path: sqlite-amalgamation-3460000/dbhash
